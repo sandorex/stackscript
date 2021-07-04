@@ -1,10 +1,12 @@
 'use strict';
 
+const NULL = 0;
 const X = (1 << 0);
 const TOP = (1 << 1);
 const BOTTOM = (1 << 2);
 const LEFT = (1 << 3);
 const RIGHT = (1 << 4);
+const BOX = TOP | BOTTOM | LEFT | RIGHT;
 const DASH = (1 << 5);
 const DASHES = DASH | (1 << 6);
 
@@ -28,38 +30,55 @@ function draw_shape(shape, x, y, w, h, inc = 0, d = false) {
 		return 0;
 	}
 
-	if (maskAll(shape, TOP)) {
-		line(
-			x - w / 2 - mask(LEFT),
-			y - h / 2 - inc,
-			x + w / 2 + mask(RIGHT),
-			y - h / 2 - inc
-		);
+	if (maskAll(shape, X)) {
+		if (maskAll(shape, TOP | BOTTOM | LEFT | RIGHT)) {
+			line(
+				x - w / 2,
+				y,
+				x + w / 2,
+				y
+			);
+			line(
+				x,
+				y - h / 2,
+				x,
+				y + h / 2
+			);
+		}
+	} else {
+		if (maskAll(shape, TOP)) {
+			line(
+				x - w / 2 - mask(LEFT),
+				y - h / 2 - inc,
+				x + w / 2 + mask(RIGHT),
+				y - h / 2 - inc
+			);
+		}
+
+		if (maskAll(shape, BOTTOM))
+			line(
+				x - w / 2 - mask(LEFT),
+				y + h / 2 + inc,
+				x + w / 2 + mask(RIGHT),
+				y + h / 2 + inc
+			);
+
+		if (maskAll(shape, LEFT))
+			line(
+				x - w / 2 - inc,
+				y - h / 2 - mask(TOP),
+				x - w / 2 - inc,
+				y + h / 2 + mask(BOTTOM)
+			);
+
+		if (maskAll(shape, RIGHT))
+			line(
+				x + w / 2 + inc,
+				y - h / 2 - mask(TOP),
+				x + w / 2 + inc,
+				y + h / 2 + mask(BOTTOM)
+			);
 	}
-
-	if (maskAll(shape, BOTTOM))
-		line(
-			x - w / 2 - mask(LEFT),
-			y + h / 2 + inc,
-			x + w / 2 + mask(RIGHT),
-			y + h / 2 + inc
-		);
-
-	if (maskAll(shape, LEFT))
-		line(
-			x - w / 2 - inc,
-			y - h / 2 - mask(TOP),
-			x - w / 2 - inc,
-			y + h / 2 + mask(BOTTOM)
-		);
-
-	if (maskAll(shape, RIGHT))
-		line(
-			x + w / 2 + inc,
-			y - h / 2 - mask(TOP),
-			x + w / 2 + inc,
-			y + h / 2 + mask(BOTTOM)
-		);
 }
 
 function setup() {
@@ -72,10 +91,10 @@ function draw() {
 	stroke(255, 255, 255);
 	strokeWeight(3);
 	// SHAPE_L.draw(width / 2, height / 2, 50, 50);
-	draw_shape(0xff, width / 2, height / 2, 50, 50);
+	draw_shape(~(X), width / 2, height / 2, 50, 50);
 
 	draw_shape(BOTTOM | TOP, width / 2, height / 2, 50, 50, 15);
-	draw_shape(LEFT | RIGHT | TOP | BOTTOM, width / 2, height / 2, 50, 50 + 30, 15);
+	// draw_shape(X | LEFT | RIGHT | TOP | BOTTOM, width / 2, height / 2, 50, 50 + 30, 15);
 
 	stroke(255, 0, 0);
 	point(width / 2, height / 2);
