@@ -230,6 +230,8 @@ function drawShape(shapes, x, y, bounds, inc) {
 	});
 }
 
+var STR = 'Hello';
+
 function setup() {
 	createCanvas(1000, 1000);
 	strokeCap(PROJECT);
@@ -241,21 +243,20 @@ function draw() {
 	strokeWeight(4);
 	// drawv9000([BOX, CHARACTERS['a'], BOX & ~(LEFT), BOX & ~(RIGHT), CROSS, X | TOP, X | BOTTOM, X | LEFT, X | RIGHT, X, BOX], width / 2 - 250, height / 2, new Bounds(25, 25, 25, 25), 15);
 
-	const str = 'there';
-	var shapes = [CHARACTERS['T'], CHARACTERS['H']];
+	var shapes = [];
 
 	// drawShape([CHARACTERS['E']], width / 3, height / 2, new Bounds(25, 25, 25, 25), 15);
 
-	// for (let i = 0; i < str.length; i++) {
-	// 	const ch = str.charAt(i).toUpperCase();
-	// 	try {
-	// 		const shapeFound = CHARACTERS[ch];
-	// 		shapes.push(shapeFound);
-	// 	} catch (error) {
-	// 		console.log('Error could not find the character "' + ch + '" in the database:\n' + error);
-	// 		break;
-	// 	}
-	// }
+	for (let i = 0; i < STR.length; i++) {
+		const ch = STR.charAt(i).toUpperCase();
+		try {
+			const shapeFound = CHARACTERS[ch];
+			shapes.push(shapeFound);
+		} catch (error) {
+			console.log('Error could not find the character "' + ch + '" in the database:\n' + error);
+			break;
+		}
+	}
 	// console.log(shapes);
 	drawShape(shapes, width / 3, height / 2, new Bounds(25, 25, 25, 25), 15);
 	stroke(255, 0, 0);
