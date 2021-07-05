@@ -12,19 +12,29 @@ const DASHES = DASH | (1 << 6);
 const BOX = TOP | BOTTOM | LEFT | RIGHT;
 const CROSS = X | BOX;
 
-function maskAll(value, mask) {
-	return (value & mask) == mask;
+// TODO stop formatting this!!
+const CHARACTERS = {
+	'Y': BOTTOM | RIGHT | DASH, 'W': BOX & ~(TOP) | DASH, 'Z': BOTTOM | LEFT | DASH,
+	'J': BOTTOM | RIGHT, 'U': BOX & ~(TOP), 'L': BOTTOM | LEFT,
+
+	'S': BOX & ~(LEFT) | DASH, 'B': BOX | DASH, 'E': BOX & ~(RIGHT) | DASH,
+	'D': BOX & ~(LEFT), 'O': BOX, 'C': BOX & ~(RIGHT),
+
+	'Q': TOP | RIGHT | DASH, 'M': BOX & ~(BOTTOM) | DASH, 'F': TOP | LEFT | DASH,
+	'G': TOP | RIGHT, 'P': BOX & ~(BOTTOM), 'R': TOP | LEFT,
+
+	// the X thingy
+	'V': X | TOP, '.': X | TOP | DASH,
+	// '?': X | LEFT, // also beg"
+	'K': X | RIGHT, // also end"
+	'A': X | BOTTOM, 'N': X | BOTTOM | DASH,
+
+	// special cases
+	'T': CROSS,
+	'H': BOTTOM,
+	'I': RIGHT,
 }
 
-function maskAny(value, mask) {
-	return (value & mask) > 0;
-}
-
-function maskNone(value, mask) {
-	return !maskAny(value, mask);
-}
-
-// TODO use this
 class Shape {
 	constructor(shape) {
 		this.shape = shape;
@@ -64,8 +74,8 @@ class Bounds {
 	}
 }
 
-function drawv9000(shapes, x, y, bounds, inc) {
-	shapes.forEach(shapeo => {
+function drawShape(shapes, x, y, bounds, inc) {
+	shapes.forEach((shapeo, index) => {
 		var shape = new Shape(shapeo);
 
 		function mNot(flag) {
@@ -75,6 +85,7 @@ function drawv9000(shapes, x, y, bounds, inc) {
 			return 0;
 		}
 
+		// TODO all Xs are offset if they are the first character
 		if (shape.has(X)) {
 			const scale = 0.1; // proportional scale width to height so it doesn't look awful
 			const offsetX = inc * 2 + (scale * bounds.right);
@@ -228,16 +239,26 @@ function draw() {
 	background(0);
 	stroke(255, 255, 255);
 	strokeWeight(4);
+	// drawv9000([BOX, CHARACTERS['a'], BOX & ~(LEFT), BOX & ~(RIGHT), CROSS, X | TOP, X | BOTTOM, X | LEFT, X | RIGHT, X, BOX], width / 2 - 250, height / 2, new Bounds(25, 25, 25, 25), 15);
 
-	drawv9000([BOX, CROSS, BOX & ~(LEFT), BOX & ~(RIGHT), CROSS, X | TOP, X | BOTTOM, X | LEFT, X | RIGHT, X, BOX], width / 2 - 250, height / 2, new Bounds(25, 25, 25, 25), 15);
-	// SHAPE_L.draw(width / 2, height / 2, 50, 50);
-	// draw_shape(~(X), width / 2, height / 2, 50, 50);
+	const str = 'there';
+	var shapes = [CHARACTERS['T'], CHARACTERS['H']];
 
-	// draw_shape(BOTTOM | TOP, width / 2, height / 2, 50, 50, 15);
-	// draw_shape(LEFT | RIGHT | TOP | BOTTOM, width / 2, height / 2, 50, 50 + 30, 15);
-	// draw_shape(0xff, width / 2 + 50 + 30, height / 2, 50, 50);
-	// draw_shape(LEFT | RIGHT | TOP | BOTTOM, width / 2, height / 2, 50 + 50 + 30, 50 + 30 * 2, 15);
+	// drawShape([CHARACTERS['E']], width / 3, height / 2, new Bounds(25, 25, 25, 25), 15);
 
+	// for (let i = 0; i < str.length; i++) {
+	// 	const ch = str.charAt(i).toUpperCase();
+	// 	try {
+	// 		const shapeFound = CHARACTERS[ch];
+	// 		shapes.push(shapeFound);
+	// 	} catch (error) {
+	// 		console.log('Error could not find the character "' + ch + '" in the database:\n' + error);
+	// 		break;
+	// 	}
+	// }
+	// console.log(shapes);
+	drawShape(shapes, width / 3, height / 2, new Bounds(25, 25, 25, 25), 15);
 	stroke(255, 0, 0);
 	point(width / 2, height / 2);
 }
+
